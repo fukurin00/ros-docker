@@ -1,0 +1,57 @@
+# Install ROS packages.
+ARG ROS_DISTRO=melodic
+FROM ros:$ROS_DISTRO
+
+ARG USER_NAME=autoware
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+#
+# Install tools and libraries required by Autoware
+#
+# hadolint ignore=DL3008,DL3013
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        sudo \
+        dbus-x11 \
+        gnome-terminal \
+        tmux \
+        vim \
+        wget && \
+        rm -rf /var/lib/apt/lists/*
+
+# Add user
+ENV USERNAME ${USER_NAME}
+ARG USER_ID=1000
+ARG GROUP_ID=15214
+ENV PULSE_SERVER /run/pulse/native
+
+RUN groupadd --gid $GROUP_ID $USERNAME && \
+        useradd --gid $GROUP_ID -m $USERNAME && \
+        echo "$USERNAME:$USERNAME" | chpasswd && \
+        usermod --shell /bin/bash $USERNAME && \
+        usermod -aG sudo $USERNAME && \
+        usermod  --uid $USER_ID $USERNAME && \
+        echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME && \
+        chmod 0440 /etc/sudoers.d/$USERNAME
+
+
+# Startup scripts
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/profile.d/ros.sh 
+
+# install other ros packages
+COPY ./dependencies /tmp/dependencies
+RUN apt-get update && \
+    sed "s/\$ROS_DISTRO/$ROS_DISTRO/g" "/tmp/dependencies" | xargs apt-get install -y && \
+    rm -rf /var/lib/apt/lists/*
+
+USER ${USER_NAME}
+
+RUN rosdep update
+
+# RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> \
+#     /home/$USERNAME/.bashrc
+
+COPY ./entrypoint.sh /tmp
+# hadolint ignore=DL3002
+USER root
+ENTRYPOINT ["/tmp/entrypoint.sh"]
