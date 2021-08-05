@@ -6,4 +6,6 @@ docker run \
     --volume=$HOME/.Xauthority:$HOME/.Xauthority:rw \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
+    --volume=$HOME/ros2_ws:$HOME:rw
+    --name="ros2-work" \
     fukurin/ros2:galactic-base
