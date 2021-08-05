@@ -1,13 +1,9 @@
-# GPUとGUIが使えるDockerfileをamd64で動かす
-
 FROM nvidia/cudagl:11.4.0-base-ubuntu20.04
 
-# これを入れないとtzdataで設定入力を求められて停止する
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
     apt install -yq wget curl git build-essential vim sudo lsb-release locales bash-completion tzdata gnupg
-
 
 # Replace 1000 with your user / group id
 RUN useradd -m developer && echo "developer:developer" | chpasswd && \
@@ -45,7 +41,9 @@ RUN apt update
 RUN export ROS_DISTRO=galactic && \
     apt install -y ros-galactic-desktop
 
-RUN apt install -y ros-galactic-gazebo-ros-pkgs
+RUN apt install -y python3-rosdep python3-colcon-common-extensions ros-galactic-gazebo-ros-pkgs
+
+RUN rosdep init && rosdep update
 
 USER developer
 ENV HOME /home/developer
