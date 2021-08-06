@@ -1,4 +1,4 @@
-FROM nvidia/cudagl:11.2.2-base-ubuntu18.04
+FROM nvidia/cudagl:11.4.0-base-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -25,23 +25,43 @@ ENV LANG     en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 RUN locale
 
-ENV ROS_DISTRO melodic
+ENV ROS_DISTRO galactic
+
+RUN apt install -y software-properties-common && \
+ add-apt-repository universe
+
+RUN apt update && \
+ curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
+  -o /usr/share/keyrings/ros-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
+http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+RUN apt update
+
+# ROS2パッケージのインストール
+RUN export ROS_DISTRO=galactic && \
+    apt install -y ros-galactic-desktop
+
+RUN apt install -y python3-rosdep python3-colcon-common-extensions ros-galactic-gazebo-ros-pkgs
+
+RUN rosdep init && rosdep update
 
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - && \
 apt update
 
-# ROSパッケージのインストール
-RUN export ROS_DISTRO=melodic && \
-    apt install -y ros-melodic-desktop-full
+#install ros noetic
+RUN apt install -y ros-noetic-desktop-full
 
 RUN apt install -y python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
 
-RUN rosdep init && rosdep update
-
 USER developer
-ENV USERNAME developer
 ENV HOME /home/developer
 
+RUN mkdir -p ${HOME}/ros1_bridge/src && \
+git clone -b galactic https://github.com/ros2/ros1_bridge.git && \
+cd ${HOME}/ros1_bridge && \
+source /opt/ros/noetic/setup.basrh && \
+source /opt/ros/galactic/setup.bash && \
+colcon build --symlink-install --packages-select ros1_bridge --cmake-force-configure && \
+source install/setup.bash
 
-RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
