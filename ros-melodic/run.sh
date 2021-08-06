@@ -6,8 +6,8 @@ docker run \
     --volume=$HOME/.Xauthority:$HOME/.Xauthority:rw \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
-    --volume=$HOME/ros2_ws:$HOME:rw \
+    --volume=$HOME/ros_docker_ws:$HOME:rw \
     --name="ros-melodic-work" \
-    fukurin/ros2:melodic-base
+    fukurin/ros:melodic-base
 
 # --network=host \

@@ -43,7 +43,5 @@ USER developer
 ENV USERNAME developer
 ENV HOME /home/developer
 
-COPY entrypoint.sh /tmp/entrypoint.sh
 
-## 環境設定
-ENTRYPOINT [ /tmp/entrypoint.sh ]
+RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc

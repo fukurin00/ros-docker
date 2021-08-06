@@ -1,14 +1,13 @@
-IMAGE=fukurin/ros:melodic-ubuntu
-USER_ID="$(id -u)"
-
-echo "Launching $IMAGE"
+xhost +local:root
 docker run \
     -it --rm \
+    --gpus all \
     --volume=/tmp/.X11-unix:/tmp/.X11-unix:rw \
     --volume=$HOME/.Xauthority:$HOME/.Xauthority:rw \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
-    --env="USER_ID=$USER_ID" \
-    --net=host \
-    --privileged \
-    $IMAGE
+    --volume=$HOME/ros_docker_ws:$HOME:rw \
+    --name="ros-melodic-work" \
+    --network=host \
+    fukurin/ros:melodic-base
+
