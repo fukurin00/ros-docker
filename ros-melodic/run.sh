@@ -7,7 +7,7 @@ docker run \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
     --volume=$HOME/ros2_ws:$HOME:rw \
-    --name="ros2-work" \
-    fukurin/ros2:galactic-working
+    --name="ros-melodic-work" \
+    fukurin/ros2:melodic-base
 
 # --network=host \

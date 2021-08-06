@@ -10,5 +10,6 @@ if [ -z "$1" ]; then
 fi
 
 export HOME="/home/$USERNAME/"
+echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
 chroot --userspec=$USERNAME:$USERNAME --skip-chdir / "$@"
 
