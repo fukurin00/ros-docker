@@ -52,22 +52,19 @@ RUN apt install -y ros-noetic-desktop-full
 
 RUN apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
 
+# install ros1 bridge
+RUN apt install -y ros-galactic-ros1-bridge
+
 RUN rosdep init && rosdep update
 
 ENV HOME /home/developer
 
 WORKDIR /home/developer
-
-# RUN mkdir -p ${HOME}/ros1_bridge/src && \
-# git clone -b galactic https://github.com/ros2/ros1_bridge.git ${HOME}/ros1_bridge/src && \
-# cd ${HOME}/ros1_bridge && \
-# source /opt/ros/noetic/setup.basrh && \
-# source /opt/ros/galactic/setup.bash && \
-# colcon build --symlink-install --packages-select ros1_bridge --cmake-force-configure && \
-# source install/setup.bash
-
 ENV ROS_MASTER_URI http://localhost:11311
 
-USER developer
+COPY bridge.sh /home/developer
 
-# CMD ros2 run ros1_bridge dynemic_bridge
+COPY setup.bash /etc
+RUN echo "source /etc/setup.bash" >> /etc/bash.bashrc
+USER developer
+ENTRYPOINT ["/bin/bash"]

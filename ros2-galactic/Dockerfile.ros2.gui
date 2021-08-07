@@ -16,7 +16,7 @@ RUN useradd -m developer && echo "developer:developer" | chpasswd && \
 RUN curl -sSL http://get.gazebosim.org | sh
 
 
-# ロケールのセットアップ
+# setup locale
 RUN apt update && apt install -y locales && \
     locale-gen en_US en_US.UTF-8 && \
     update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
@@ -37,7 +37,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/r
 http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 RUN apt update
 
-# ROS2パッケージのインストール
+# install ros2 package
 RUN export ROS_DISTRO=galactic && \
     apt install -y ros-galactic-desktop
 
@@ -45,8 +45,10 @@ RUN apt install -y python3-rosdep python3-colcon-common-extensions ros-galactic-
 
 RUN rosdep init && rosdep update
 
-USER developer
 ENV HOME /home/developer
+WORKDIR /home/developer
 
-## 環境設定
-RUN  echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
+COPY setup.bash /etc
+RUN echo "source /etc/setup.bash" >> /etc/bash.bashrc
+USER developer
+ENTRYPOINT ["/bin/bash"]
