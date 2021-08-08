@@ -1,0 +1,54 @@
+version: '2'
+services:
+  master:
+    image: ros:melodic-ros-core
+    container_name: master
+    command:
+      - roscore
+
+  bridge:
+    image: fukurin/ros2:galactic-bridge
+    container_name: bridge
+    environment:
+      - "ROS_HOSTNAME=bridge"
+      - "ROS_MASTER_URI=http://master:11311"
+    tty: true
+      # command: 
+    #   - bash
+      # - ros2 run ros1_bridge dynamic_bridge
+
+  melodic:
+    image: fukurin/ros:melodic-base
+    container_name: melodic
+    environment:
+      - "ROS_HOSTNAME=melodic"
+      - "ROS_MASTER_URI=http://master:11311"
+      - "XAUTHORITY=$HOME/.Xauthority"
+      - "DISPLAY=${DISPLAY}"
+    volumes:
+      - /dev/input:/dev/input
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:$HOME/.Xauthority:rw
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]
+    tty: true
+
+  galactic:
+    image: fukurin/ros2:galactic-base
+    container_name: galactic
+    volumes:
+      - /dev/input:/dev/input
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:$HOME/.Xauthority:rw
+    environment: 
+      - "XAUTHORITY=$HOME/.Xauthority"
+      - "DISPLAY=${DISPLAY}"
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]
+    tty: true
