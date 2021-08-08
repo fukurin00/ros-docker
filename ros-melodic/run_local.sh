@@ -10,6 +10,6 @@ docker run \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
     --volume=$HOME/ros_docker_ws:$HOME:rw \
-    --name="ros-melodic-work" \
+    --name="melodic" \
     --network=host \
     fukurin/ros:melodic-base

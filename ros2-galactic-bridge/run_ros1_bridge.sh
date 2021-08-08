@@ -9,7 +9,7 @@ docker run \
     --volume=$HOME/.Xauthority:$HOME/.Xauthority:rw \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
-    --name="ros2-bridge-work" \
+    --name="galactic-bridge" \
     --network=host \
     --env="ROS_MASTER_URI=http://localhost:11311" \
     fukurin/ros2:galactic-bridge 

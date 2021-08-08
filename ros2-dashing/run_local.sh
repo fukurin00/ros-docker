@@ -7,6 +7,6 @@ docker run \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
     --volume=$HOME/ros2_ws:$HOME:rw \
-    --name="ros2-dashing" \
+    --name="dashing" \
     --network=host \
     fukurin/ros2:dashing-working

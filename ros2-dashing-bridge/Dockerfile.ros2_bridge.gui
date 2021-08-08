@@ -50,7 +50,7 @@ apt update
 #install ros melodic
 RUN apt install -y ros-melodic-desktop-full
 
-RUN apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+RUN apt install -y python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
 
 # install ros1 bridge
 RUN apt install -y ros-dashing-ros1-bridge
