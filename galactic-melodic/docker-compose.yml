@@ -17,16 +17,14 @@ services:
   melodic:
     image: fukurin/ros:melodic-base
     container_name: melodic
-    environment:
-      - "ROS_HOSTNAME=melodic"
-      - "ROS_MASTER_URI=http://master:11311"
-      - "XAUTHORITY=$HOME/.Xauthority"
-      - "DISPLAY=${DISPLAY}"
+    env_file: melodic.env
     volumes:
+      # - /etc/passwd:/etc/passwd:ro
+      # - /etc/group:/etc/group:ro
       - /dev/input:/dev/input
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:$HOME/.Xauthority:rw
-      - $HOME/ros_docker_ws:$HOME/host_ws:rw 
+      - $HOME/ros_docker_ws/:$HOME:rw 
     deploy:
       resources:
         reservations:
@@ -37,14 +35,17 @@ services:
   galactic:
     image: fukurin/ros2:galactic-base
     container_name: galactic
+    user: "${UID}:${GID}"
     volumes:
       - /dev/input:/dev/input
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:$HOME/.Xauthority:rw
-      - $HOME/ros2_ws:$HOME/host_ws:rw
+      - $HOME/ros2_ws/:/home/developer:rw
     environment: 
       - "XAUTHORITY=$HOME/.Xauthority"
       - "DISPLAY=${DISPLAY}"
+      - "USER_ID=$UID"
+      - "GROUP_ID=$GID"
     deploy:
       resources:
         reservations:

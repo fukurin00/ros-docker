@@ -6,6 +6,8 @@ docker run \
     --volume=$HOME/.Xauthority:$HOME/.Xauthority:rw \
     --env="XAUTHORITY=$HOME/.Xauthority" \
     --env="DISPLAY=${DISPLAY}" \
+    --env="USER_ID=$(id -u)" \
+    --env="GROUP_ID=$(id -g)" \
     --volume=$HOME/ros_docker_ws:$HOME:rw \
     --name="melodic" \
     fukurin/ros:melodic-base

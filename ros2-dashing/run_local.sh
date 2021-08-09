@@ -9,4 +9,4 @@ docker run \
     --volume=$HOME/ros2_ws:$HOME:rw \
     --name="dashing" \
     --network=host \
-    fukurin/ros2:dashing-working
+    fukurin/ros2:dashing-base

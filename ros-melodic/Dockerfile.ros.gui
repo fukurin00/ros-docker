@@ -5,13 +5,23 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install -yq wget curl git build-essential vim sudo lsb-release locales bash-completion tzdata gnupg
 
+ARG USERNAME=dev-melodic
+ENV USERNAME $USERNAME
+ARG USER_ID=1000
+ARG GROUP_ID=15214
+ENV PULSE_SERVER /run/pulse/native
+
 # Replace 1000 with your user / group id
-RUN useradd -m developer && echo "developer:developer" | chpasswd && \
-    adduser developer sudo && \
-    mkdir -p /home/developer && \
-    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
-    chmod 0440 /etc/sudoers.d/developer && \
-    chown developer:developer -R /home/developer
+RUN groupadd --gid $GROUP_ID $USERNAME && \
+    useradd --gid $GROUP_ID -m $USERNAME && \
+    echo "$USERNAME:$USERNAME" | chpasswd && \
+    adduser $USERNAME sudo && \
+    usermod --shell /bin/bash $USERNAME && \
+    usermod --uid $USER_ID $USERNAME && \
+    mkdir -p /home/$USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME && \
+    chown $USERNAME:$USERNAME -R /home/$USERNAME
 
 RUN curl -sSL http://get.gazebosim.org | sh
 
@@ -39,11 +49,11 @@ RUN apt install -y python-rosdep python-rosinstall python-rosinstall-generator p
 
 RUN rosdep init && rosdep update
 
-ENV USERNAME developer
-ENV HOME /home/developer
-WORKDIR /home/developer
+ENV USERNAME $USERNAME
+ENV HOME /home/$USERNAME
+WORKDIR /home/$USERNAME
 
 COPY setup.bash /etc
 RUN echo "source /etc/setup.bash" >> /etc/bash.bashrc
-USER developer
+USER $USERNAME
 ENTRYPOINT ["/bin/bash"]
