@@ -13,9 +13,6 @@ services:
       - "ROS_HOSTNAME=bridge"
       - "ROS_MASTER_URI=http://master:11311"
     tty: true
-      # command: 
-    #   - bash
-      # - ros2 run ros1_bridge dynamic_bridge
 
   melodic:
     image: fukurin/ros:melodic-base
@@ -29,6 +26,7 @@ services:
       - /dev/input:/dev/input
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:$HOME/.Xauthority:rw
+      - $HOME/ros_docker_ws:$HOME:rw 
     deploy:
       resources:
         reservations:
@@ -43,6 +41,7 @@ services:
       - /dev/input:/dev/input
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:$HOME/.Xauthority:rw
+      - $HOME/ros2_ws:$HOME:rw
     environment: 
       - "XAUTHORITY=$HOME/.Xauthority"
       - "DISPLAY=${DISPLAY}"
