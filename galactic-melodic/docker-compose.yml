@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   master:
     image: ros:melodic-ros-core
@@ -26,7 +26,7 @@ services:
       - /dev/input:/dev/input
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:$HOME/.Xauthority:rw
-      - $HOME/ros_docker_ws:$HOME:rw 
+      - $HOME/ros_docker_ws:$HOME/host_ws:rw 
     deploy:
       resources:
         reservations:
@@ -41,7 +41,7 @@ services:
       - /dev/input:/dev/input
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:$HOME/.Xauthority:rw
-      - $HOME/ros2_ws:$HOME:rw
+      - $HOME/ros2_ws:$HOME/host_ws:rw
     environment: 
       - "XAUTHORITY=$HOME/.Xauthority"
       - "DISPLAY=${DISPLAY}"
