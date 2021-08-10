@@ -8,6 +8,7 @@
 - build.sh: build docker image
 - run.sh: run docker container
 
+- compose はテスト中（あまりうまくいってない）
 # tag
 - base
   - fukurin/ros2:galactic-base
